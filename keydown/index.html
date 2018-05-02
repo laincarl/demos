@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+        var code = {
+            down: 0,
+            press: 0,
+            up: 0,
+        }
+        document.onkeydown = function(e) {
+            console.log('down', e.keyCode);
+            code.down = e.keyCode;
+            update()
+        }
+        document.onkeypress = function(e) {
+            console.log('press', e.keyCode)
+            code.press = e.keyCode;
+            update()
+        }
+        document.onkeyup = function(e) {
+            console.log('up', e.keyCode)
+            code.up = e.keyCode;
+            update()
+        }
+
+        function update() {
+            var downcode = code.down;
+            presscode = code.press;
+            upcode = code.up;
+            var str = '当前按下按键\:' + '<br/>' +
+                'keydown\:' + downcode + '<br/>' +
+                'keypress\:' + presscode + '<br/>' +
+                'keyup\:' + upcode
+            document.getElementById("show").innerHTML = str
+        }
+    </script>
+</head>
+
+<body>
+    <div id="show">
+        请按下按键吧
+    </div>
+</body>
+
+</html>
