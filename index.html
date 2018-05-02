@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+        // window.onresize = toggle;
+        document.addEventListener('fullscreenchange', toggle);
+        document.addEventListener('webkitfullscreenchange', toggle);
+        document.addEventListener('mozfullscreenchange', toggle);
+        document.addEventListener('MSFullscreenChange', toggle);
+
+        function checkFull() {
+            // var isFull =
+            //     document.fullscreenEnabled ||
+            //     window.fullScreen ||
+            //     document.webkitIsFullScreen ||
+            //     document.msFullscreenEnabled;
+            var isFull =
+                document.fullscreenElement ||
+                document.mozFullScreenElement ||
+                document.webkitFullscreenElement ||
+                document.msFullscreenElement;
+            console.log(isFull);
+            return Boolean(isFull);
+        }
+
+        function requestFullScreen(element) {
+            if (!element) {
+                // element = document.body;
+                element = document.getElementById("fullTest")
+            }
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullScreen) {
+                element.webkitRequestFullScreen();
+            }
+        }
+
+        function exitFullScreen() {
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen()
+            }
+        }
+
+        function toggle() {
+            var button = document.getElementById("toggleButton");
+            var full = checkFull();
+            console.log(full)
+            if (full) {
+                button.innerText = "退出全屏"
+            } else {
+                button.innerText = "进入全屏"
+            }
+        }
+
+        function switchScreen() {
+            var full = checkFull();
+            if (full) {
+                exitFullScreen();
+            } else {
+                requestFullScreen();
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+         :-webkit-full-screen {
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+        }
+        
+         :-moz-full-screen {}
+        
+         :-ms-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+        }
+        
+         :fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+        }
+        
+        #fullTest {
+            background: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="fullTest">
+        <button id="toggleButton" onclick="switchScreen()">进入全屏</button>
+    </div>
+</body>
+
+</html>
