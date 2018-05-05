@@ -6,3 +6,4 @@
 3. [按键函数的不同表现](https://laincarl.github.io/demos/keydown/)
 4. [js控制伪元素样式](https://laincarl.github.io/demos/control-pseudo-by-js/)
 5. [material效果实现](https://laincarl.github.io/demos/material/)
+6. [轮播](https://laincarl.github.io/demos/slider/)
