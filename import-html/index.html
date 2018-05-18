@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        *,
+        *:after {
+            box-sizing: border-box;
+        }
+        
+        .collapsible-wrapper {
+            /* display: flex; */
+            overflow: hidden;
+        }
+        
+        .collapsible-wrapper:after {
+            content: '';
+            height: 50px;
+            transition: height 0.3s linear, max-height 0s 0.3s linear;
+            max-height: 0px;
+        }
+        
+        .collapsible {
+            transition: margin-bottom 0.3s cubic-bezier(0, 0, 0, 1);
+            margin-bottom: 0;
+            max-height: 1000000px;
+        }
+        
+        .collapsible-wrapper.collapsed>.collapsible {
+            margin-bottom: -2000px;
+            transition: margin-bottom 0.3s cubic-bezier(1, 0, 1, 1), visibility 0s 0.3s, max-height 0s 0.3s;
+            visibility: hidden;
+            max-height: 0;
+        }
+        
+        .collapsible-wrapper.collapsed:after {
+            height: 0;
+            transition: height 0.3s linear;
+            max-height: 50px;
+        }
+        
+        .menu {
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 20px rgba(0, 0, 0, 0.3);
+            margin: 20px;
+            /* width: 200px; */
+        }
+        
+        .menu-item:hover,
+        .menu-item:focus {
+            text-decoration: none;
+        }
+        
+        .menu-item {
+            color: black;
+            text-decoration: none;
+            display: block;
+            /* width: 200px; */
+            background: #fafafa;
+            border: 1px solid #eee;
+            margin: 0;
+            padding: 1em;
+            user-select: none;
+            line-height: 1.3;
+            cursor: pointer;
+            transition: all 300ms ease-out;
+        }
+        
+        .menu-item:hover {
+            background: rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .collapsible .menu-item {
+            background: white;
+        }
+        
+        .collapsible .menu-item:focus {
+            background: #ddd;
+        }
+        
+        .menu-item.toggler:before {
+            content: '';
+            display: block;
+            border-left: 8px solid #999;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            width: 0;
+            height: 0;
+            float: right;
+            transition: transform 0.3s ease-out;
+        }
+        
+        .menu-item.toggler.toggled:before {
+            transform: rotate(90deg);
+        }
+        /* 整体容器 */
+        
+        .container {
+            display: flex;
+        }
+        
+        #content {
+            flex: 1;
+            border: 1px dashed gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 左侧菜单 -->
+        <div style="width:200px">
+            <div id="menu">
+                <div class="menu-item" data-html="a.html">加载测试a</div>
+                <div class="menu-item" data-html="b.html">加载测试b</div>
+                <div class="menu-item toggler toggled">菜单一</div>
+                <div class="collapsible-wrapper">
+                    <div class="collapsible">
+                        <div class="menu-item" data-html="c.html">加载测试c</div>
+                        <div class="menu-item">菜单二</div>
+                        <div class="menu-item">菜单二</div>
+                        <div class="menu-item">菜单二</div>
+                    </div>
+                </div>
+                <div class="menu-item">菜单一</div>
+                <div class="menu-item">菜单一</div>
+            </div>
+        </div>
+        <div id="content">
+            内容区域
+        </div>
+    </div>
+    <script>
+        (
+            function() {
+                // 为展开添加监听器
+                var menu = document.getElementById("menu");
+                menu.onclick = function(e) {
+                    var target = e.target;
+                    // 可展开项
+                    if (target.classList.contains("toggler")) {
+                        toggleClass(e.target, "toggled");
+                        // console.log(e.target, e.target.nextElementSibling)
+                        toggleClass(e.target.nextElementSibling, "collapsed");
+                    }
+                    // 菜单项
+                    else if (target.classList.contains("menu-item")) {
+                        // 获取链接地址
+                        var link = target.getAttribute("data-html");
+                        loadHTML(link);
+                    }
+                }
+            }
+        )()
+
+        function toggleClass(ele, className) {
+            if (ele.classList.contains(className)) {
+                ele.classList.remove(className)
+            } else {
+                ele.classList.add(className);
+            }
+        }
+        // 加载html，并设置到页面上
+        function loadHTML(url) {
+            // var el = document.getElementById("content");
+            var localTest = /^(?:file):/,
+                xmlhttp = new XMLHttpRequest(),
+                status = 0;
+
+            xmlhttp.onreadystatechange = function() {
+                /* if we are on a local protocol, and we have response text, we'll assume
+                 *  				things were sucessful */
+                if (xmlhttp.readyState == 4) {
+                    status = xmlhttp.status;
+                }
+                if (localTest.test(location.href) && xmlhttp.responseText) {
+                    status = 200;
+                }
+                if (xmlhttp.readyState == 4 && status == 200) {
+                    // el.outerHTML = xmlhttp.responseText;
+                    // el.innerHTML = xmlhttp.responseText;
+                    setHtml(xmlhttp.responseText);
+                    // return xmlhttp.responseText;
+                }
+            }
+
+            try {
+                xmlhttp.open("GET", url, true);
+                xmlhttp.send();
+            } catch (err) {
+                /* todo catch error */
+            }
+        }
+        // 设置html，由于script直接使用innerHTML插入不会执行，需要单独处理
+        function setHtml(html) {
+            var el = document.getElementById("content");
+            var scriptReg = /<script[^]*?(?:src=["']([^]*?)['"])?>([^]*?)<\/script>/g;
+            var htmlWithoutScript = html.replace(scriptReg, '');
+            el.innerHTML = htmlWithoutScript;
+            var script;
+            // console.log(html);
+            //正则找出script标签       
+            while (script = scriptReg.exec(html)) {
+                console.log(script);
+                //script src
+                var scriptNode = document.createElement("script");
+                if (script[1]) {
+                    scriptNode.setAttribute("src", script[1])
+                }
+                //script标签内部内容
+                scriptNode.innerHTML = script[2];
+                el.appendChild(scriptNode);
+            }
+        }
+        loadHTML('a.html');
+    </script>
+</body>
+
+</html>
