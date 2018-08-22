@@ -14,29 +14,16 @@
                 $(this).toggleClass("toggled"); // this just rotates the expander arrow
             });
         });
-
-        function test() {
-            $("#testdiv").toggleClass("collapsed")
-        }
     </script>
     <style>
-        .container {
-            overflow: hidden;
-        }
-        /* .collapsible {
-            transition: margin-bottom 0.3s cubic-bezier(0, 0, 0, 1);
-            margin-bottom: 0;
-            background: gray;
+        * {
+            box-sizing: border-box;
         }
         
-        .collapsible.collapsed {
-            margin-bottom: -5000px;
-            transition: margin-bottom 0.3s cubic-bezier(1, 0, 1, 1);
-        }*/
-        
-        .menuItem {
-            height: 60px;
-            background: red;
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
         
         .collapsible-wrapper {
@@ -69,37 +56,120 @@
             transition: height 0.3s linear;
             max-height: 50px;
         }
+        /* END of the collapsible implementation; the stuff below
+   is just styling for this demo */
+        
+        .container {
+            display: flex;
+            align-items: flex-start;
+            max-width: 1000px;
+        }
+        
+        .menu-item {
+            display: block;
+            background: #ddd;
+            margin: 0;
+            padding: 1em;
+            line-height: 1.3;
+            width: 300px;
+            border: 1px solid #eee;
+        }
+        
+        .collapsible .menu-item {
+            border-left: 2px solid #888;
+            border-right: 2px solid #888;
+            background: #eee;
+        }
+        
+        .menu-item.toggler {
+            cursor: pointer;
+        }
+        
+        .menu-item.toggler:before {
+            content: '';
+            display: block;
+            border-left: 8px solid white;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            width: 0;
+            height: 0;
+            float: right;
+            transition: transform 0.3s ease-out;
+        }
+        
+        .menu-item.toggler.toggled:before {
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 
 <body>
-    <div>sss</div>
-    <div class="collapsible-wrapper collapsed" id="testdiv">
-        <ul class="collapsible">
-            <li class="menuItem">1</li>
+    <div class="container">
+        <ul>
+            <li>
+                <div class="menu-item toggler">菜单一</div>
+                <div class="collapsible-wrapper collapsed">
+                    <ul class="collapsible">
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="menu-item">菜单二</div>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <div class="menu-item toggler">菜单一</div>
+                <div class="collapsible-wrapper collapsed">
+                    <ul class="collapsible">
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="menu-item">菜单二</div>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <div class="menu-item toggler">菜单一</div>
+                <div class="collapsible-wrapper collapsed">
+                    <ul class="collapsible">
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                        <li>
+                            <div class="menu-item">菜单1.1</div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <div class="menu-item">菜单二</div>
+            </li>
         </ul>
     </div>
-    <button onclick="test()">
-      切换
-    </button>
-    <!-- <div style="width:200px">
-        <div class="menu">
-            <div class="menu-item">菜单一</div>
-            <div class="menu-item">菜单一</div>
-            <div class="menu-item toggler">菜单一</div>
-            <div class="collapsible-wrapper collapsed">
-                <div class="collapsible">
-                    <div class="menu-item">菜单二</div>
-                    <div class="menu-item">菜单二</div>
-                    <div class="menu-item">菜单二</div>
-                    <div class="menu-item">菜单二</div>
-                    <div class="menu-item">菜单二</div>
-                </div>
-            </div>
-            <div class="menu-item">菜单一</div>
-            <div class="menu-item">菜单一</div>
-        </div>
-    </div> -->
 </body>
 
 </html>
