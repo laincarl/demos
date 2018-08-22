@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #toggled {
+            width: 300px;
+            background-color: #eee;
+            overflow: hidden;
+            max-height: 0px;
+            transition: max-height .8s cubic-bezier(0, 1, 0, 1) -.1s;
+        }
+        
+        a[href='#hover-toggle']:hover+#toggled,
+        #toggled:target {
+            max-height: 9999px;
+            transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
+            transition-delay: 0s;
+        }
+        /* demo styles */
+        
+        a[href*='#'] {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #444;
+            padding: 5px 20px;
+            color: #fff;
+        }
+        
+        #toggled,
+        #toggled p,
+        a[href*='#'] {
+            margin: 10px;
+            font-family: arial, sans-serif;
+            font-size: 1em;
+            line-height: 1.4em;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="#toggled">Slide down</a> | <a href="#">Slide up</a> <br />
+    <a href="#hover-toggle">Hover to toggle</a>
+    <div id="toggled">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    sss
+</body>
+
+</html>
