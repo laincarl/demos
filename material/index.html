@@ -2,120 +2,124 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <script>
-        var addRule = (function(style) {
-            var sheet = document.head.appendChild(style).sheet;
-            return function(selector, css) {
-                var propText = typeof css === "string" ? css : Object.keys(css).map(function(p) {
-                    return p + ":" + (p === "content" ? "'" + css[p] + "'" : css[p]);
-                }).join(";");
-                sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
-            };
-        })(document.createElement("style"));
-
-        function deactive(e) {
-            console.log('end');
-            e.target.classList.remove("material-active");
-            e.target.removeEventListener("webkitAnimationEnd", deactive);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script>
+    document.addEventListener("mousedown", function (e) {
+      // console.log(e)
+      if (e.target.classList.contains("Ripple")) {
+        var wrapper = getWrapper(e);
+        if (!wrapper) {
+          return;
         }
-        document.addEventListener("mousedown", function(e) {
-            if (e.target.classList.contains("material")) {
-                var ele = e.target;
-                console.log(e.clientX, e.target.getBoundingClientRect().left)
-                var left = e.clientX - e.target.getBoundingClientRect().left - e.target.getBoundingClientRect().width / 8;
-                var top = e.clientY - e.target.getBoundingClientRect().top - e.target.getBoundingClientRect().height / 8;
-                var width = parseInt(Math.max(e.target.getBoundingClientRect().width, e.target.getBoundingClientRect().height) / 4);
-                //第一种方法
-                e.target.style = "--size:" + width + "px;" + "--top:" + top + "px;" + "--left:" + left + "px;"
-                    //第二种方法,insertRule插入已有属性不生效,要加入!important
-                    // addRule(".material:after", {
-                    //     width: width + 'px!important',
-                    //     height: width + 'px!important',
-                    //     left: left + 'px!important',
-                    //     top: top + 'px!important'
-                    // });
-                if (e.target.classList.contains("material-active")) {
-                    e.target.classList.remove("material-active");
-                    setTimeout(function() {
-                        e.target.classList.add("material-active");
-                    }, 0);
-                } else {
-                    e.target.classList.add("material-active");
-                }
-                // console.log(document.styleSheets[0])
-                //insertRule插入已有属性不生效,要加入!important
-                // document.styleSheets[0].insertRule('.material{ background: green; }', 0);
-                // document.styleSheets[0].insertRule('.material{ background: red!important; }', 0);
-                e.target.addEventListener("webkitAnimationEnd", deactive);
-            }
+        // console.log(wrapper)
+        var ripple = document.createElement('div');
+        var wrapperHeight = wrapper.getBoundingClientRect().height;
+        var wrapperWidth = wrapper.getBoundingClientRect().width;
+        // 半径
+        var r = Math.sqrt(wrapperHeight * wrapperHeight + wrapperWidth * wrapperWidth);
+        var left = e.clientX - wrapper.getBoundingClientRect().left - r;
+        var top = e.clientY - wrapper.getBoundingClientRect().top - r;
+        ripple.style.width = r * 2 + 'px';
+        ripple.style.height = r * 2 + 'px';
+        ripple.style.left = left + 'px';
+        ripple.style.top = top + 'px';
+        ripple.classList.add('ripple');
+        wrapper.appendChild(ripple);
+        requestAnimationFrame(function () {
+          ripple.classList.add('ripple-active')
 
         })
+        var remove = function () {
+          document.removeEventListener('mouseup', remove);
+          ripple.classList.add('ripple-done')
+          setTimeout(function () {
+            wrapper.removeChild(ripple);
+          }, 650);
+          console.log('remove')
 
+        }
+        document.addEventListener('mouseup', remove)
+        
+      }
+    })
+    function getWrapper(e) {
+      var children = e.target.children;
+      // console.log(children)
+      var length = children.length;
+      for (var i = 0; i < length; i++) {
+        if (children[i].classList.contains('ripple-wrapper')) {
+          return children[i];
+        }
+      }
+      return null;
+    }
+    function active(e) {
 
-        function active(e) {
+    }
+  </script>
+  <style>
+    .container {
+      width: 100px;
+      height: 100px;
+      border: solid 1px gray;
+    }
 
-        }
-    </script>
-    <style>
-        .container {
-            width: 100px;
-            height: 100px;
-            border: solid 1px gray;
-        }
-        
-        .material {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .material:after {
-            content: '';
-            height: var(--size, 50%);
-            width: var(--size, 50%);
-            opacity: 0;
-            background: rgba(0, 0, 0, 0.25);
-            position: absolute;
-            pointer-events: none;
-            top: var(--top, 50%);
-            left: var(--left, 50%);
-            border-radius: 50%;
-            /* transform: translateX(-50%) translateY(-50%); */
-        }
-        
-        .material-active:after {
-            animation: grow 0.4s linear;
-        }
-        
-        @keyframes grow {
-            from {
-                opacity: 0;
-                transform: scale(1)
-            }
-            to {
-                opacity: 0.7;
-                transform: scale(12)
-            }
-        }
-        
-        .container2 {
-            width: 500px;
-            height: 500px;
-            border: solid 1px gray;
-        }
-    </style>
+    .Ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple-wrapper {
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .ripple {
+      position: absolute;
+      opacity: 0.2;
+      background: rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+      border-radius: 50%;
+      transition: all 0.5s linear;
+      transform: scale(0);
+    }
+
+    .ripple-active {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+
+    .ripple-done {
+      opacity: 0;
+    }
+
+    .container2 {
+      width: 500px;
+      height: 500px;
+      border: solid 1px gray;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container material" style="--ttt:38.4px;">
 
-    </div>
-    <div class="container2 material" style="--ttt:38.4px;">
+  <div class="container Ripple">
+    <span class="ripple-wrapper"></span>
+  </div>
 
-    </div>
+
+  <div class="container2 Ripple">
+    <span class="ripple-wrapper"></span>
+  </div>
+
+
 </body>
 
 </html>
