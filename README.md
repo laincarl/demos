@@ -8,3 +8,4 @@
 5. [material效果实现](https://laincarl.github.io/demos/material/)
 6. [轮播](https://laincarl.github.io/demos/slider/)
 7. [html中加载其他html（包括元素，样式，脚本）](https://laincarl.github.io/demos/import_html/)
+7. [自己实现dom转图片并下载](https://laincarl.github.io/demos/snap/)
