@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>html2canvas</title>
+  <style>
+    .content {
+      width: 300px;
+      height: 300px;
+      box-sizing: border-box;
+      border: 1px solid #f00;
+      background: #86dfa6;
+    }
+
+    .blue {
+      color: #07f;
+      display: block;
+    }
+
+    .red {
+      color: #f35;
+      font-size: 20px;
+      display: block;
+    }
+
+    .block {
+      width: 100px;
+      height: 100px;
+      background: red;
+    }
+
+    #canvas {
+      display: none;
+    }
+
+    .button {
+      width: 200px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      background: #0077ff;
+      color: #fff;
+      border-radius: 3px;
+      margin: 10px 0;
+    }
+
+    .img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="content">
+    <span class="red">这是一个红色的字</span>
+    <div class="block">123</div>
+    <img src="./pic.jpg" class="img" />
+    <span class="blue">这是一个蓝色的字</span>
+  </div>
+  <div class="button" onclick="shotScreen()">点我截图</div>
+
+</body>
+
+<script type="text/javascript">
+  // 主入口函数
+  function shotScreen() {
+
+    var target = document.querySelector('.content')
+    var data = getSvgDomString(target)
+
+    var DOMURL = window.URL || window.webkitURL || window;
+
+    var img = new Image();
+    img.onload = function () {
+      console.log('load', img)
+      download(img)
+      // download(img);
+    }
+    // var svg = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+    // var url = DOMURL.createObjectURL(svg);
+    // img.src = url;
+    img.src = 'data:image/svg+xml;charset=utf-8,' + data;
+    // document.body.appendChild(img)
+
+
+    // //  如果想画到 canvas 里面
+    // var canvas = document.getElementById('canvas');
+    // var ctx = canvas.getContext('2d');
+
+    // img.onload = function () {
+    //    ctx.drawImage(img, 0, 0);
+    //    DOMURL.revokeObjectURL(url);
+    // }
+
+
+  }
+  // 计算 svg 的字符串
+  function getSvgDomString(element) {
+    var dom = element;
+    if (!dom) {
+      return this;
+    }
+    // 复制DOM节点
+    var cloneDom = dom.cloneNode(true);
+    cloneDom.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+    // 将样式都写到style
+    setStyle(dom, cloneDom)
+    var width = element.offsetWidth;
+    var height = element.offsetHeight;
+
+    return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">\n
+       <foreignObject width="100%" height="100%">\n
+          ${new XMLSerializer().serializeToString(cloneDom)}
+       </foreignObject>\n
+   </svg>`
+  }
+
+  // img转base64
+  function img2base64(img) {
+    // 判断图片是否加载完全
+    if (img.complete) {
+      // img.setAttribute("crossOrigin", 'Anonymous');
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      // 图片的宽高与展示的或许不同，这里获取原始大小
+      var width = img.naturalWidth, height = img.naturalHeight;
+      // canvas绘制
+      canvas.width = width;
+      canvas.height = height;
+      // 画布清除
+      context.clearRect(0, 0, width, height);
+      // 绘制图片到canvas
+      context.drawImage(img, 0, 0);
+      console.log(img)
+      return canvas.toDataURL();
+    }
+    return '';
+  };
+  function setStyle(element, elementClone) {
+    var tag = element.tagName.toLowerCase()
+    elementClone.setAttribute('style', getElementStyles(element))
+    if (tag === 'img') {
+      var src = img2base64(element);
+      elementClone.setAttribute('src', src);
+    }
+    if (element.children.length) {
+      var len = element.children.length;
+      for (var i = 0; i < len; i++) {
+        setStyle(element.children[i], elementClone.children[i])
+      }
+    }
+  }
+	/**
+	 * 计算每个 dom 的样式
+	 * 这里本来应该直接用 Object.keys + forEach 遍历取出的
+	 * 但是不知道为什么,遍历取出的,会渲染不出来,应该是某些属性有问题
+	 * 暂时没空去排查那些有问题,所以目前先把常用的直接写死.
+	 **/
+  function getElementStyles(el) {
+    var css = window.getComputedStyle(el)
+    var style = ''
+    for (var key of css) {
+      // console.log(key,isNaN(key))
+      style += `${hump(key)}:${css[key]};`
+    }
+    return style
+  }
+  //驼峰转横杠
+  function hump(str) {
+    //火狐默认大小写都有，chrome为驼峰
+    if (str === str.toLowerCase()) {
+      return str;
+    }
+    var reg = /([A-Z]|webkit|moz|ms)/g;
+    return str.replace(reg, function (match) {
+      return '-' + match.toLowerCase();
+    })
+  }
+  function download(img) {
+    var eleLink = document.createElement('a');
+    // 下载图片文件名就按照时间戳来
+    eleLink.download = 'snap-' + (+new Date() + '').slice(1, 9) + '.png';
+    eleLink.style.display = 'none';
+    eleLink.href = img2base64(img);
+    // 触发点击
+    document.body.appendChild(eleLink);
+    eleLink.click();
+    // 然后移除
+    document.body.removeChild(eleLink);
+  };
+</script>
+
+</html>
