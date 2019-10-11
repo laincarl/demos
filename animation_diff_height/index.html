@@ -7,14 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
+        body {
+            margin: 0;
+        }
+
         .container {
             display: flex;
             flex-wrap: wrap;
         }
-        
+
         .child_frame {
             width: 50%;
-            height: 300px;
+            height: 100vh;
         }
     </style>
 </head>
@@ -23,8 +27,6 @@
     <div class="container">
         <iframe src="./1.html" frameborder="0" class="child_frame"></iframe>
         <iframe src="./2.html" frameborder="0" class="child_frame"></iframe>
-        <iframe src="./3.html" frameborder="0" class="child_frame"></iframe>
-        <iframe src="./4.html" frameborder="0" class="child_frame"></iframe>
     </div>
 </body>
 

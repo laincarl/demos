@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
+        /* 动画代码 */
         #toggled {
             width: 300px;
             background-color: #eee;
@@ -14,41 +15,31 @@
             max-height: 0px;
             transition: max-height .8s cubic-bezier(0, 1, 0, 1) -.1s;
         }
-        
-        a[href='#hover-toggle']:hover+#toggled,
-        #toggled:target {
+
+        .toggler:hover + #toggled {
             max-height: 9999px;
             transition-timing-function: cubic-bezier(0.5, 0, 1, 0);
             transition-delay: 0s;
         }
-        /* demo styles */
-        
-        a[href*='#'] {
+
+        /* 其他样式 */
+        .toggler {
             display: inline-block;
             text-decoration: none;
             background-color: #444;
             padding: 5px 20px;
             color: #fff;
         }
-        
-        #toggled,
-        #toggled p,
-        a[href*='#'] {
-            margin: 10px;
-            font-family: arial, sans-serif;
-            font-size: 1em;
-            line-height: 1.4em;
-        }
     </style>
 </head>
 
 <body>
-    <a href="#toggled">Slide down</a> | <a href="#">Slide up</a> <br />
-    <a href="#hover-toggle">Hover to toggle</a>
+    使用max-height实现
+    <div class="toggler">toggle</div>
     <div id="toggled">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p>这是一段很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的文字
+        </p>
     </div>
-    sss
 </body>
 
 </html>
