@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    var contextToUse = {
+      a: 'a'
+    }
+    function test(b) {
+      console.log(this.a, b)
+    }
+    Function.prototype.call = function (context, ...args) {
+      var fn = this;
+      var rightContext = context || window;
+      rightContext.fn = fn;
+      rightContext.fn(...args)
+      delete rightContext.fn;
+    }
+    Function.prototype.call = function (context, args) {
+      var fn = this;
+      var rightContext = context || window;
+      rightContext.fn = fn;
+      rightContext.fn(...args)
+      delete rightContext.fn;
+    }
+    Function.prototype.bind = function (context, ...args) {
+      var fn = this;
+      return function (...otherArgs) {
+        fn.apply(context, [...args, ...otherArgs])
+      }
+    }
+    test.call(contextToUse, 'b')
+    test.apply(contextToUse, ['b'])
+    var testBind = test.bind(contextToUse, 'b');
+    testBind()
+  </script>
+</body>
+
+</html>

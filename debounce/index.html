@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text" name="" id="" oninput="inputEvent(event)">
+  <script>
+    function debounce(fn, time = 300) {
+      var timer = null;
+      return function (...args) {
+        clearTimeout(timer)
+        var self = this;
+        timer = setTimeout(function () {
+          fn.apply(self, args)
+        }, time)
+      }
+    }
+    function test(e) {
+      console.log(e.target.value)
+    }
+    const inputEvent = debounce(test, 500)
+  </script>
+</body>
+
+</html>

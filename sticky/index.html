@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .container {
+      position: relative;
+      overflow: auto;
+      height: 500px;
+    }
+
+    .fixed-header {
+      position: sticky;
+      top: 0;
+      display: flex;
+    }
+
+    .content {
+
+      display: flex;
+    }
+
+    .header-item:first-of-type,
+    .content-item:first-of-type {
+      border-left: 1px solid black;
+    }
+
+    .header-item {
+      border-top: 1px solid black;
+    }
+
+    .header-item,
+    .content-item {
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    .header-item {
+      flex: 1;
+      height: 50px;
+      min-width: 100px;
+    }
+
+    .content-item {
+      flex: 1;
+      height: 500px;
+      min-width: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="fixed-header">
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+    </div>
+    <div class="content">
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+    </div>
+  </div>
+</body>
+
+</html>

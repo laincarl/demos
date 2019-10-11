@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      height: 100%;
+      display: flex;
+      overflow: auto;
+    }
+
+    .container div {
+      height: 1000%;
+      flex: 1;
+      transition: flex 0.3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    }
+
+    .container div:hover {
+      /* font-size: initial; initial ie 不识别 */
+      /* width: 50% !important; */
+      flex: 2;
+    }
+
+   
+    .left {
+      background: #FFB100;
+    }
+
+    .middle {
+      background: #00BFA5;
+    }
+
+    .right {
+      background: #FF7043;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="left">1</div>
+    <div class="middle">2</div>
+    <div class="right">3</div>
+  </div>
+</body>
+
+</html>

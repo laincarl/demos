@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="http://libs.baidu.com/jquery/1.8.3/jquery.min.js"></script>
+        <title>lonhon</title>
+    </head>
+    <body>
+    <input id="txt" type="text">
+    <script>
+        var flag = true;
+        $('#txt').on('compositionstart',function(){
+            flag = false;
+        })
+        $('#txt').on('compositionend',function(){
+            flag = true;
+        })
+        $('#txt').on('input',function(){
+            var _this = this;
+            setTimeout(function(){
+                if(flag){
+                    console.log($(_this).val());
+                    // flag = false;
+                }
+            },0)
+        })
+    </script>
+    </body>
+</html>

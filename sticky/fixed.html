@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .container {
+      width: 800px;
+      position: relative;
+      overflow: auto;
+      height: 500px;
+    }
+
+    .fixed-header {
+      width: 800px;
+      left: 0;
+      overflow: hidden;
+      display: flex;
+      overflow-y: scroll;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .header-item:first-of-type,
+    .content-item:first-of-type {
+      border-left: 1px solid black;
+    }
+
+    .header-item {
+      border-top: 1px solid black;
+    }
+
+    .header-item,
+    .content-item {
+      border-right: 1px solid black;
+      border-bottom: 1px solid black;
+    }
+
+    .header-item {
+      flex: 1;
+      height: 50px;
+      min-width: 100px;
+    }
+
+    .content-item {
+      flex: 1;
+      height: 900px;
+      min-width: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" onscroll="handleScroll(event)">
+    <div class="fixed-header">
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+      <div class="header-item"></div>
+    </div>
+    <div class="content">
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+      <div class="content-item"></div>
+    </div>
+  </div>
+  <script>
+    // fixed，这种只适用于固定一个方向，比如顶部
+    var timer = null;
+    function handleScroll(e) {
+      var header = document.getElementsByClassName("fixed-header")[0];
+      var container = document.getElementsByClassName("container")[0];
+      var scrollTop = e.target.scrollTop;
+      header.scrollLeft = container.scrollLeft;
+      console.log(container.scrollLeft)
+      if (header.style.position !== 'fixed') {
+        header.style.position = 'fixed';
+        header.style.top = `${container.getBoundingClientRect().top}px`;
+      }
+
+      clearTimeout(timer)
+      timer = setTimeout(function () {
+        header.style.position = 'absolute';
+        header.style.top = `${scrollTop}px`;
+      }, 1000)
+    }
+  </script>
+</body>
+
+</html>

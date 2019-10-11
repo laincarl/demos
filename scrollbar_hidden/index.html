@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .outer-container,
+    .content {
+      width: 200px;
+      height: 200px;
+      /* overflow: auto; */
+    }
+
+    .content {
+      width: 100%;
+    }
+
+    .outer-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inner-container {
+      position: absolute;
+      left: 0;
+      /* overflow-x: hidden;
+      overflow-y: scroll; */
+      overflow: auto;
+    }
+
+    /* for Chrome */
+    /* .inner-container::-webkit-scrollbar {
+      display: none;
+    } */
+    .container {
+      width: 200px;
+      height: 200px;
+      /* padding: 20px; */
+      overflow: hidden;
+    }
+
+    .scroller {
+      width: calc(200px + 20px);
+      height: calc(200px + 20px);
+      overflow: auto;
+    }
+
+    .parent {
+      width: 400px;
+      height: 200px;
+      border: 1px solid #aaa;
+      overflow: hidden;
+    }
+
+    .child {
+      height: 100%;
+      margin-bottom: -50px;
+      /* maximum width of scrollbar */
+      padding-bottom: 50px;
+      /* maximum width of scrollbar */
+      margin-right: -50px;
+      /* maximum width of scrollbar */
+      padding-right: 50px;
+      /* maximum width of scrollbar */
+      overflow: scroll;
+    }
+
+    p {
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="outer-container">
+    <div class="inner-container">
+      <div class="content">
+        ......
+        <div style="height:2000px;width:500px;background: red">
+          aaa
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="scroller">
+      ......
+      <div style="height:2000px;width:500px;background: red">
+        aaa
+      </div>
+    </div>
+  </div>
+  <div class="parent">
+    <div class="child">
+      <div style="height:2000px;width:500px;background: red;padding: 10px">
+        aaa
+      </div>
+    </div>
+  </div>ddd
+</body>
+
+</html>
