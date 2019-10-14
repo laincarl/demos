@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    /* new操作符做了几件事情
+    *  1. 创建一个对象，并且将对象的[[prototype]](在chrome和firefox中可以使用__proto__查看)设置为构造函数的prototype
+    *  2. 将这个对象赋值给构造函数的this
+    *  3. 如果构造函数返回了一个对象，则返回这个对象，否则返回new中创建的对象
+    */
+    function MyNew(fn, ...args) {
+      if (typeof ctor !== 'function') {
+        throw 'newOperator function the first param must be a function';
+      }
+      // ES6 new.target 是指向构造函数
+      MyNew.target = fn;
+      // 通过apply来实现this的注入，
+      // 通过setPrototypeOf或者Object.create实现[[prototype]]的设置,// obj.__proto__ = fn.prototype;不规范
+      const obj = Object.create(fn.prototype);
+      // Object.setPrototypeOf(obj, Con.prototype)
+
+      const result = fn.apply(obj, args);
+      return typeof result === 'object' && result !== null ? result : obj;
+    }
+    function Person(name) {
+      this.name = name;
+    }
+    Person.prototype.sayName = function () {
+      return this.name
+    }
+    const person = MyNew(Person, 'wang');
+    console.log(person, person.sayName())
+  </script>
+</body>
+
+</html>
