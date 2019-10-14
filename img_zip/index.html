@@ -17,6 +17,7 @@
       console.log('压缩前', file)
       compressImage(file, function (file) {
         console.log('压缩后', file);
+        funDownload(file, 'a.jpeg');
         const formData = new FormData();
         formData.append('file', file, file.name || '上传图片.jpeg');
         console.log(formData);
@@ -74,7 +75,7 @@
           file = new Blob([ab], { type: 'image/jpeg' });
           file.name = name;
 
-          success(file);
+          success(file);        
         }
         img.onerror = (e) => {
           error(e);
@@ -84,6 +85,20 @@
         error(e);
       }
     }
+    var funDownload = function (content, filename) {
+      // 创建隐藏的可下载链接
+      var eleLink = document.createElement('a');
+      eleLink.download = filename;
+      eleLink.style.display = 'none';
+      // 字符内容转变成blob地址
+      var blob = new Blob([content]);
+      eleLink.href = URL.createObjectURL(blob);
+      // 触发点击
+      document.body.appendChild(eleLink);
+      eleLink.click();
+      // 然后移除
+      document.body.removeChild(eleLink);
+    };
 
   </script>
 </body>

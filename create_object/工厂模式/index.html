@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // prototype和__proto__
+    // 1. prototype是函数才有的，值为一个对象，包括constructor和__proto__
+    // 2. __proto__是对象才有的，值为父类的prototype
+
+
+
+
+
+    // 简单方式：
+    // Object.create(),new Object(),Object() 和 {} 不同，{}不会调用Object构造函数
+    // new Object() 和Object()都会类型转换，和Number(),String()类似，根据参数类型返回对应对象
+    // 例如Object('name')返回 String对象
+
+    // 复杂方式
+    (function () {
+      /*
+      * 工厂模式，工厂为一个函数，接收一些属性，在内部创建新对象
+      * 所以无法使用instanceof判断类型，每一个实例都会实例化所有属性和方法，浪费
+      *
+      */
+      function personFactory(name) {
+        var obj = {};
+        obj.name = name;
+        obj.sayName = function () {
+          return this.name
+        }
+        return obj;
+      }
+      const person = personFactory('wang');
+      console.log('工厂模式开始----------')
+      console.log(person.sayName());
+      console.log('instanceof:', person instanceof personFactory);
+      console.log('工厂模式结束----------')
+    })();
+    /*
+    * 构造函数模式，使用new操作符创建。可以看出与比工厂模式相比，
+    * 1. 可以使用instanceof来判断类型了。
+    * 2. 没有创建和返回对象（这些由new操作符做了）
+    * 3. 直接将属性和方法放到this上。
+    * 4. [[prototype]]会包含constructor，就是构造函数
+    */
+    (function () {
+      function Person(name) {
+        this.name = name;
+        this.sayName = function () {
+          return this.name;
+        }
+      }
+      const person = new Person('wang');
+      console.log('构造函数模式开始----------');
+      console.log(person.sayName());
+      console.log('person:', person);
+      console.log('prototype:', person.prototype);
+      console.log('instanceof:', person instanceof Person);
+      console.log('constructor:', person.constructor);
+      console.log('构造函数模式结束----------')
+    })();
+    /*
+    * 原型模式，将函数挂载在原型上创建实例时只需要实例化属性，方法不需要实例化。
+    * 1. 所有实例共享所有属性，一个改变所有改变
+    * 2. 方法和属性都在[[prototype]]上，在chrome和firefox可以使用__proto__访问（非规范）
+    */
+    (function () {
+      function Person() {
+
+      }
+      Person.prototype.name = 'wang';
+      Person.prototype.sayName = function () {
+        return this.name;
+      }
+      const person = new Person('wang');
+      console.log('原型模式开始----------');
+      console.log(person, person.sayName());
+      console.log('person:', person);
+      console.log('instanceof:', person instanceof Person);
+      console.log('原型模式结束----------')
+    })();
+    /*
+    * 原型模式和工厂模式合并，将函数挂载在原型上创建实例时只需要实例化属性，方法不需要实例化。
+    *
+    */
+    (function () {
+      function Person(name) {
+        this.name = name;
+      }
+      Person.prototype.sayName = function () {
+        return this.name;
+      }
+      const person = new Person('wang');
+      console.log('原型模式和工厂模式合并开始----------');
+      console.log(person, person.sayName());
+      console.log('instanceof:', person instanceof Person);
+      console.log('原型模式和工厂模式合并结束----------')
+    })();
+    /*
+    * 动态原型模式，将prototype的指向在构造函数内部执行，所有每次new都会执行一次，性能可能会差，但是可能
+    * 1. 看起来和构造函数一体 
+    *
+    */
+    (function () {
+      function Person(name) {
+        this.name = name;
+        // this的查找
+        if (typeof this.sayName !== 'function') {
+          Person.prototype.sayName = function () {
+            return this.name;
+          }
+        }
+      }
+
+      const person = new Person('wang');
+      console.log('动态原型模式开始----------');
+      console.log(person, person.sayName());
+      console.log('instanceof:', person instanceof Person);
+      console.log('动态原型模式结束----------')
+    })();
+    /*
+   * 寄生构造函数模式，和工厂模式写法一毛一样，使用new操作符，由于new默认返回新的实例，但是这里构造函数return了值
+   * 1. 由于构造函数返回了值，所以new的时候不会返回创建的实例，而是obj，所以不能使用instanceof
+   *
+   */
+    (function () {
+      function Person(name) {
+        var obj = {};
+        obj.name = name;
+        obj.sayName = function () {
+          return this.name
+        }
+        return obj;
+      }
+
+      const person = new Person('wang');
+      console.log('寄生构造函数模式开始----------');
+      console.log(person, person.sayName());
+      console.log('instanceof:', person instanceof Person);
+      console.log('寄生构造函数模式结束----------')
+    })();
+    /*
+   * 稳妥构造函数模式，其实就是闭包嘛，将变量安全的保存在函数内，只能通过方法访问，不能直接访问
+   * 1. 肯定不能instanceof
+   *
+   */
+    (function () {
+      function Person(name) {
+        var obj = {};
+        //这里可以定义其他变量  
+        obj.sayName = function () {
+          return name
+        }
+        return obj;
+      }
+
+      const person = Person('wang');
+      console.log('稳妥构造函数模式开始----------');
+      console.log(person, person.sayName());
+      console.log('name:', person.name);
+      console.log('instanceof:', person instanceof Person);
+      console.log('稳妥构造函数模式结束----------')
+    })();                         
+  </script>
+
+</body>
+
+</html>
