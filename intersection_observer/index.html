@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Intersection Observer图片懒加载</title>
+  <style>
+    .item {
+      height: 500px;
+      width: 500px;
+      margin: auto;
+      border: 1px solid green;
+      overflow: hidden;
+    }
+
+    img[src=""] {
+      visibility: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <div class="item"><img src="" alt=""></div>
+  <script>
+    function callback(entries, observer) {
+      entries.forEach(entry => {
+        console.log(entry)
+        const { intersectionRatio, target } = entry;
+        if (intersectionRatio > 0.5) {
+          target.querySelector('img').setAttribute('src', './img.jpg')
+          observer.unobserve(target)
+        }
+        // Each entry describes an intersection change for one observed
+        // target element:
+        //   entry.boundingClientRect
+        //   entry.intersectionRatio
+        //   entry.intersectionRect
+        //   entry.isIntersecting
+        //   entry.rootBounds
+        //   entry.target
+        //   entry.time
+
+      });
+    }
+    var options = {
+      // root: document.querySelector('#scrollArea'),
+      rootMargin: '0px',
+      // threshold: [0, 0.25, 0.5, 0.75, 1]
+      threshold: [1]
+    }
+
+    var observer = new IntersectionObserver(callback, options);
+    var elements = document.querySelectorAll('.item');
+    elements.forEach(element => {
+      observer.observe(element);
+    })
+
+  </script>
+</body>
+
+</html>

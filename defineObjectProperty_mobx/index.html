@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Mobx</title>
+</head>
+
+<body>
+  <div id="container">
+    <input type="text" id="input" oninput="handleChangeAction(event)">
+    <div id="show"></div>
+  </div>
+  <script>
+    const input = document.getElementById('input');
+    const show = document.getElementById('show');
+    function Mobx() {
+      this.__deps = [];
+      this.__actionDeps = [];
+      this.__depMap = new Map();
+      const that = this;
+      this.observe = function (obj) {
+        Object.keys(obj).forEach((key) => {
+          let value = obj[key];
+          Object.defineProperty(obj, key, {
+            get: function (...args) {
+              that.__deps.push(key)
+              return value;
+            },
+            set: function (newValue) {
+              if (newValue !== value) {
+                value = newValue;
+                that.__actionDeps.push(key)
+                observer(newValue)
+              }
+            }
+          })
+        })
+      }
+      this.action = function (fn) {
+        const inner = function (...args) {
+          // 收集依赖
+          that.__actionDeps = [];
+          fn.apply(this, args);
+          const effects = that.__actionDeps;
+          effects.forEach((e) => {
+            if (that.__depMap.get(e)) {
+              that.__depMap.get(e).forEach(f => {
+                f()
+              })
+            }
+          })
+          that.__actionDeps = []
+        }
+        // if (fn.name) {
+        //   this[fn.name] = inner;
+        // }
+        return inner;
+      }
+      this.observer = function (fn) {
+        const inner = function (...args) {
+          // 获取依赖
+          that.__deps = []
+          fn.apply(this, args);
+          const dependence = that.__deps;
+          that.__deps = [];
+          dependence.forEach((d) => {
+            if (that.__depMap.get(d) !== undefined) {
+              that.__depMap.get(d).push(fn)
+            } else {
+              that.__depMap.set(d, [fn])
+            }
+          })
+        }
+        // if (fn.name) {
+        //   this[fn.name] = inner;
+        // }
+        return inner;
+      }
+    }
+    const mobx = new Mobx()
+    var obj = {
+      name: 'ss'
+    }
+
+    const { observe, observer, action } = mobx;
+    observe(obj)
+    const renderObserver = observer(function render() {
+      const { name } = obj;
+      document.getElementById('input').value = name;
+      document.getElementById('show').textContent = name;
+    })
+    renderObserver();
+    const handleChangeAction = action((e) => {
+      obj.name = e.target.value;
+    });
+    action(() => {
+      obj.name = 'modify in action';
+    })()
+    obj.name = 'modify outside'
+  </script>
+</body>
+
+</html>

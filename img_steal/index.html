@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <!-- 
+  <img
+    data-dao="http://mmbiz.qpic.cn/mmbiz/TFOeefBvpQxKxwV9vQvo8FTjkPlahTwZKblcgw2jl8ia4uYGuNkyyrRicENibeVTc7ibl1RKeM6kPh7uYqv0xEjffQ/0?cache=false"
+    class="my-img1">
+  <img
+    data-dao="http://mmbiz.qpic.cn/mmbiz/zzsYqmQgjFkYGj6zWicqCyekbicZPl80Cicf7sj945mPicBv3eC7brwUV7MR63iaNKO9t3pBojqsOxKzYDswg3X7D0A/0?cache=false"
+    class="my-img1">
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script>
+    $(function () {
+      window.ifrimg_html = '<scr' + 'ipt>window.onload=function(){parent.$("img[data-dao]").attr("src",function(){return parent.$(this).data("dao")})}</scr' + 'ipt>';
+      $('img[data-dao]').each(function () {
+        window.ifrimg_html += '<img src="' + $(this).data('dao') + '" />';
+      });
+      $('body').append('<iframe src="javascript:parent.ifrimg_html;" style="display:none;"></iframe>');
+    });
+  </script> -->
+  <script>
+    // const url = 'http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe key';
+    // function getUrlParam(sUrl, sKey) {
+    //   const regex = /[?&]+[^?&%]+=[^?&#]*/g;
+    //   let obj = {}
+    //   sUrl.match(regex).forEach(item => {
+    //     console.log(item)
+    //     const [key, value] = item.replace(/[?&]+/g, '').split('=');
+    //     if (obj[key]) {
+    //       if (obj[key] instanceof Array) {
+    //         obj[key].push(value)
+    //       } else {
+    //         obj[key] = [obj[key], value]
+    //       }
+    //     } else {
+    //       obj[key] = value;
+    //     }
+    //   })
+    //   return sKey ? obj[sKey] : obj
+    // }
+    // console.log(getUrlParam(url))
+    function distinct(a, b) {
+      let arr = a.concat(b)
+      let result = []
+      let obj = {}
+
+      for (let i of arr) {
+        if (!obj[i]) {
+          result.push(i)
+          obj[i] = 1
+        }
+      }
+
+      return result
+    }
+    console.log(distinct([undefined, 0, 0], [undefined]))
+
+    function count(str) {
+      const obj = {};
+      for (let i = 0; i < str.length; i += 1) {
+        if (str[i].trim()) {
+          if (!obj[str[i]]) {
+            obj[str[i]] = 0;
+          }
+          obj[str[i]] += 1;
+        }
+      }
+      return obj;
+    }
+    console.log(count('hello world'))
+  </script>
+</body>
+
+</html>

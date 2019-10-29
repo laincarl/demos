@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function pipe1(value) {
+      return `${value} pipe1`
+    }
+    function pipe2(value) {
+      return `${value} pipe2`
+    }
+    // function compose(...args) {
+    //   return function (...fnArgs) {
+    //     let current = fnArgs
+    //     for (let i = 0; i < args.length; i += 1) {  
+    //       current = [args[i].apply(null, current)]
+    //     }
+    //     return current;
+    //   }
+    // }
+    function compose(...fns) {
+      return fns.reduce((a, b) => (...args) => {
+        console.log(a, b);
+        return a(b(...args));
+      })
+    }
+    const fn = compose(pipe1, pipe2)
+    console.log(fn('wang'))
+  </script>
+</body>
+
+</html>
