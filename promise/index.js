@@ -88,7 +88,7 @@ class MyPromise {
       nextPromise = new MyPromise((resolve, reject) => {
         setTimeout(() => {
           try {
-            let x = onRejected(this.value);
+            let x = onRejected(this.reason);
             resolvePromise(nextPromise, x, resolve, reject);
           } catch (error) {
             reject(error)
