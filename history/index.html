@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <button onclick="handleClick()">
+    click
+  </button>
+  <button onclick="changeHash()">
+    hash
+  </button>
+  <script>
+    window.onpopstate = function (event) {
+      const { state } = event;
+      console.log(state)
+      console.log(history.length)
+    }
+    function handleClick() {
+      const data = { page: 1, data: { a: 5 } };
+      history.pushState(data, "title 1", "?page=1");
+      data.page = 2;
+      data.data.a = 6;
+    }
+    function changeHash() {
+      window.location.hash = '#/aaa?page=1';
+    }
+    console.log(history.length)
+  </script>
+</body>
+
+</html>
