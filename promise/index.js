@@ -124,6 +124,7 @@ function resolvePromise(promise2, x, resolve, reject) {
     try {
       let then = x.then;
       if (typeof then === 'function') {
+        // 这里不能写为x.then(),因为x.then可能会获取不到，比如写了自定义的get方法，返回null
         then.call(
           x,
           y => {

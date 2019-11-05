@@ -11,18 +11,28 @@
 <body>
   <!-- <script src="./index.js"></script> -->
   <script>
-    new Promise((resolve, reject) => {
+    const nextPromise = new Promise((resolve, reject) => {
       resolve(1);
       return 2;
     }).then(res => {
       console.log(res)
-      return 3;
+      return nextPromise
+    })
+    nextPromise.then((res) => {
+      console.log(res)
+    })
+    const nextPromise2 = new Promise((resolve, reject) => {
+      resolve(1);
+      return 2;
     }).then(res => {
       console.log(res)
-      return new Promise((resolve, reject) => {
-        resolve(4);
-      })
-    }).then(res => {
+      return {
+        then: () => {
+          console.log('fn')
+        }
+      }
+    })
+    nextPromise2.then((res) => {
       console.log(res)
     })
   </script>
