@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function typeOf(something) {
+      return Object.prototype.toString.call(something).slice(8, -1).toLowerCase()
+    }
+    function deepClone(something) {
+      const type = typeOf(something);
+      switch (type) {
+        case 'number':
+        case 'boolean':
+        case 'string':
+        case 'null':
+        case 'undefined': {
+
+        }
+        case 'object': {
+          
+        }
+        default: return something
+      }
+    }
+  </script>
+</body>
+
+</html>
