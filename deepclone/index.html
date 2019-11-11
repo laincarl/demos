@@ -13,22 +13,91 @@
     function typeOf(something) {
       return Object.prototype.toString.call(something).slice(8, -1).toLowerCase()
     }
-    function deepClone(something) {
-      const type = typeOf(something);
-      switch (type) {
-        case 'number':
-        case 'boolean':
-        case 'string':
-        case 'null':
-        case 'undefined': {
-
+    function deepClone(something, beforeParents = []) {
+      const parents = [].concat(beforeParents);
+      const _clone = (source) => {
+        const type = typeOf(source);
+        switch (type) {
+          case 'number':
+          case 'boolean':
+          case 'string':
+          case 'null':
+          case 'function':
+          case 'undefined': {
+            return source;
+          }
+          case 'regexp': {
+            return new RegExp(
+              source.source,
+              source.flags
+            )
+          }
+          case 'object': {
+            console.log(parents, source)
+            if (parents.indexOf(source) > -1) {
+              throw new Error('循环引用');
+            }
+            parents.push(source)
+            let temp = {};
+            Object.keys(source).forEach((key) => {
+              const value = source[key];
+              temp[key] = deepClone(value, parents)
+            })
+            return temp;
+          }
+          case 'array': {
+            if (parents.indexOf(source) > -1) {
+              throw new Error('循环引用');
+            }
+            let temp = [];
+            source.forEach((value) => {
+              temp.push(deepClone(value, parents))
+            })
+            return temp;
+          }
+          case 'map': {
+            if (parents.indexOf(source) > -1) {
+              throw new Error('循环引用');
+            }
+            let temp = new Map();
+            for (let [key, value] of source) {
+              temp.set(key, deepClone(value, parents))
+            }
+            return temp;
+          }
+          case 'map': {
+            if (parents.indexOf(source) > -1) {
+              throw new Error('循环引用');
+            }
+            let temp = new Set();
+            for (let value of source.values()) {
+              temp.add(deepClone(value, parents))
+            }
+            return temp;
+          }
+          default: return source;
         }
-        case 'object': {
-          
-        }
-        default: return something
       }
+      return _clone(something)
     }
+    console.log(deepClone(true))
+    console.log(deepClone(123))
+    const a = {
+      value: 5,
+    }
+    const b = {
+      value: 6,
+    }
+    const before = {
+      a: new Map([[1, 2]]),
+      b: new Set([1, 2]),
+      c: /sss/gi
+    }
+    // a.b = b;
+    // b.a = a;
+    // console.log(JSON.parse(JSON.stringify(before)))
+    const after = deepClone(before)
+    console.log(after)
   </script>
 </body>
 
