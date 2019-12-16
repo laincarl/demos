@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    class MyPromise {
+      constructor(fn) {
+        this.status = 'pending';
+        this.resolve = this.resolve.bind(this)
+        this.reject = this.reject.bind(this)
+
+        setTimeout(() => {
+          try {
+            fn(this.resolve, this.reject);
+          } catch (error) {
+            this.reject(error)
+          }
+        });
+        return this;
+      }
+      resolve(data) {
+        if (this.status === 'pending') {
+          this.status = 'fulfilled';
+          this.callback(data);
+        }
+      }
+      reject(error) {
+        if (this.status === 'pending') {
+          this.status = 'rejected';
+          this.errorCallback(error)
+        }
+      }
+      then(callback) {
+        this.callback = callback;
+        return this;
+      }
+      catch(callback) {
+        this.errorCallback = callback
+        return this;
+      }
+    }
+
+    new MyPromise((resolve, reject) => {
+      console.log('ss')
+      setTimeout(() => {
+        resolve('done');
+      }, 5000)
+      // a += 1;
+    }).then((res) => {
+      console.log('done')
+    }).catch(err => {
+      console.log(err)
+    })
+  </script>
+</body>
+
+</html>
