@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function flatten(needFlat, depth = Infinity, total = []) {
+      if (depth === 0) {
+        return total.concat(needFlat);
+      }
+      let nextDepth = [];
+      needFlat.forEach(element => {
+        if (element instanceof Array) {
+          nextDepth = nextDepth.concat(element)
+        } else {
+          total.push(element)
+        }
+      });
+      if (nextDepth.length === 0) {
+        return total
+      }
+      return flatten(nextDepth, depth - 1, total)
+    }
+    Array.prototype.myFlat = function (depth) {
+      return flatten(this, depth)
+    }
+    console.log([[1, 2, [3], [4, [5]]]].myFlat(5))
+  </script>
+</body>
+
+</html>

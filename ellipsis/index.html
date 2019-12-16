@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .origin {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+
+    .block-with-text {
+      overflow: hidden;
+      position: relative;
+      line-height: 20px;
+      max-height: 60px;
+      text-align: justify;
+      margin-right: -1em;
+      padding-right: 1em;
+    }
+
+    .block-with-text:before {
+      content: '...';
+      position: absolute;
+      right: 0;
+      bottom: 0;
+    }
+
+    .block-with-text:after {
+      content: '';
+      position: absolute;
+      right: 0;
+      width: 1em;
+      height: 1em;
+      margin-top: 0.2em;
+      background: red;
+    }
+  </style>
+</head>
+
+<body>
+  <p class="origin" style="width: 40%;border: 1px solid red;">
+      这里是很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长
+  </p>
+  采用absolute定位实现
+  <p class="block-with-text" style="width: 40%;border: 1px solid red;">
+    这里是很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长
+  </p>
+  <p class="block-with-text">短的字</p>
+
+</body>
+
+</html>

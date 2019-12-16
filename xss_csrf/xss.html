@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>xss demo</title>
+</head>
+
+<body>
+  <a id="show">点击</a>
+  <script>
+    function getParams(url) {
+      const params = {}
+      const matchs = url.match(/[?&][^?&#]+=[^?&#]+/g)
+      matchs.forEach(element => {
+        const [key, value] = element.replace(/[?&]/g, '').split('=');
+        params[key] = value
+      });
+      return params
+    }
+    const { content } = getParams(location.href);
+    document.getElementById('show').setAttribute('href', content);
+  </script>
+</body>
+
+</html>

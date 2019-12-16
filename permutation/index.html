@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const array = [1, 2, 3, 4, 5];
+    function test(temp, ele) {
+      const arr = [];
+      if (temp.length === 0) {
+        arr.push(ele)
+      } else {
+        for (let i = 0; i < temp.length; i += 0) {
+          temp[i].splice(i, ele)
+          arr.push(temp[i])
+        }
+      }
+      return arr;
+    }
+    function permutation(arr) {
+      const total = []
+      arr.forEach(element => {
+        total.concat(test([], element))
+      });
+      console.log(total)
+    }
+    permutation(array)
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>继承</title>
+</head>
+
+<body>
+  <script>
+    /*
+    * 原型链继承，直接new一个父类，放在prototype上
+    * 存在问题
+    * 1. 引用类型由于放在了prototype上，所有各个子实例共用
+    * 2. 实例化子类时，无法向父类的构造函数传参
+    */
+    (function () {
+      function Parent() {
+        this.children = [];
+        this.getChildren = function () {
+          return this.children;
+        }
+      }
+      function Child() {
+
+      }
+      Child.prototype = new Parent()
+      const child1 = new Child();
+      const child2 = new Child();
+      child1.children.push('child1');
+      console.log(child1.getChildren(), child2.children)
+    })();
+    /*
+    * 借用构造函数，在子类构造函数中调用父类构造函数
+    * 优点
+    * 1. 父类的引用类型也不会有问题了，因为在每次子类实例化时，都会调用父类的构造函数，都是重新创建的
+    * 2. 实例化子类时，可以向父类传递参数
+    * 存在问题
+    * 1. 和对象的创建类似，函数无法复用，每次实例化都创建新的函数
+    */
+    (function () {
+      function Parent(name) {
+        this.children = [name];
+        this.getChildren = function () {
+          return this.children;
+        }
+      }
+      function Child(name) {
+        Parent.call(this, name)
+      }
+      const child1 = new Child('child1');
+      const child2 = new Child('child2');
+      child1.children.push('child3');
+      console.log(child1.getChildren(), child2.children)
+    })();
+    /*
+    * 组合式继承，组合原型和借用构造函数继承
+    * 优点
+    * 1. 父类的引用类型也不会有问题了，因为在每次子类实例化时，都会调用父类的构造函数，都是重新创建的
+    * 2. 实例化子类时，可以向父类传递参数
+    * 3. 可以使用instanceof判断
+    * 问题
+    * 1. 会调用两次父类的构造函数，一个在子类内部，另一个在放prototype时
+    * 2. 属性会重复，this上有的父类属性，prototype上还会有
+    */
+    (function () {
+      function Parent(name) {
+        this.children = [name];
+      }
+      Parent.prototype.getChildren = function () {
+        return this.children;
+      }
+      function Child(name) {
+        Parent.call(this, name)
+      }
+      Child.prototype = new Parent();
+      // 这里指定构造函数为自己，否则将是Parent
+      Child.prototype.constructor = Child;
+      const child1 = new Child('child1');
+      const child2 = new Child('child2');
+      child1.children.push('child3');
+      console.log(child1.getChildren(), child2, child2.constructor)
+    })();
+    /*
+    * 原型式继承-----其实就是Object.create
+    * 以一个对象为模板，创建另一个对象
+    * 优点
+    * 1. 不需要构造函数
+    * 缺点
+    * 1. 引用类型还是会共用
+    * 2. 肯定不能用instanceof,因为parent都不是一个函数
+    */
+    (function () {
+      const parent = {
+        children: [],
+      }
+      function create(obj, other) {
+        function F() {
+          if (other) {
+            Object.keys(other).forEach((key) => {
+              this[key] = other[key]
+            })
+          }
+        };
+        F.prototype = obj;
+        return new F();
+      }
+      const child = create(parent, {
+        name: 'wang'
+      });
+      child.children.push('child3');
+      console.log(child, parent)
+    })();
+    /*
+    * 寄生式继承-----和原型式继承差不多，但是会将创建出的对象进行增强
+    * 以一个对象为模板，创建另一个对象
+    * 缺点
+    * 1. 引用类型还是会共用
+    * 2. 不能用instanceof
+    */
+    (function () {
+      const parent = {
+        children: [],
+      }
+      function create(obj, other) {
+        function F() {
+          if (other) {
+            Object.keys(other).forEach((key) => {
+              this[key] = other[key]
+            })
+          }
+        };
+        F.prototype = obj;
+        return new F();
+      }
+      function createOther(obj) {
+        const child = create(parent);
+        child.getChildren = function () {
+          return this.children;
+        }
+        return child;
+      }
+      const child = createOther(parent);
+      child.children.push('child3');
+      console.log(child, parent)
+    })();
+    /* 真正的继承
+    * 寄生组合式继承-----将父类的自身属性和prototype上的属性分开处理
+    * 优点
+    * 1. 解决了调用两次父构造函数问题
+    * 2. 解决了属性重复问题
+    * 3. 可以使用instanceof
+    */
+    (function () {
+      function create(obj) {
+        function F() { };
+        F.prototype = obj;
+        return new F();
+      }
+      function Extends(ChildType, ParentType) {
+        // 这里不需要使用new
+        ChildType.prototype = create(ParentType.prototype);
+        // 不能采用这种方式，否则是直接改了ParentType.prototype,一个函数的prototype的constructor应当是自身
+        // ChildType.prototype = ParentType.prototype;
+        // 这里指定构造函数为自己，否则将是Parent
+        ChildType.prototype.constructor = ChildType;
+      }
+      function Parent(name) {
+        this.children = [name];
+      }
+      Parent.prototype.getChildren = function () {
+        return this.children;
+      }
+      function Child(name) {
+        Parent.call(this, name)
+      }
+      // // 
+      Extends(Child, Parent)
+      const child1 = new Child('child1');
+      const child2 = new Child('child2');
+      child1.children.push('child3');
+      console.log(child1)
+    })();
+  </script>
+</body>
+
+</html>

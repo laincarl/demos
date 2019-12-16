@@ -9,54 +9,31 @@
 </head>
 
 <body>
+  <!-- <script src="./index.js"></script> -->
   <script>
-    class MyPromise {
-      constructor(fn) {
-        this.status = 'pending';
-        this.resolve = this.resolve.bind(this)
-        this.reject = this.reject.bind(this)
-
-        setTimeout(() => {
-          try {
-            fn(this.resolve, this.reject);
-          } catch (error) {
-            this.reject(error)
-          }
-        });
-        return this;
-      }
-      resolve(data) {
-        if (this.status === 'pending') {
-          this.status = 'fulfilled';
-          this.callback(data);
+    const nextPromise = new Promise((resolve, reject) => {
+      resolve(1);
+      return 2;
+    }).then(res => {
+      console.log(res)
+      return nextPromise
+    })
+    nextPromise.then((res) => {
+      console.log(res)
+    })
+    const nextPromise2 = new Promise((resolve, reject) => {
+      resolve(1);
+      return 2;
+    }).then(res => {
+      console.log(res)
+      return {
+        then: () => {
+          console.log('fn')
         }
       }
-      reject(error) {
-        if (this.status === 'pending') {
-          this.status = 'rejected';
-          this.errorCallback(error)
-        }
-      }
-      then(callback) {
-        this.callback = callback;
-        return this;
-      }
-      catch(callback) {
-        this.errorCallback = callback
-        return this;
-      }
-    }
-
-    new MyPromise((resolve, reject) => {
-      console.log('ss')
-      setTimeout(() => {
-        resolve('done');
-      }, 5000)
-      // a += 1;
-    }).then((res) => {
-      console.log('done')
-    }).catch(err => {
-      console.log(err)
+    })
+    nextPromise2.then((res) => {
+      console.log(res)
     })
   </script>
 </body>

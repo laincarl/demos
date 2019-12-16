@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function map(array, fn) {
+      return array.reduce((a, ...args) => {
+        a.push(fn.apply(null, args));
+        return a
+      }, [])
+    }
+    Array.prototype.myMap = function (fn) {
+      return map(this, fn)
+    }
+    console.log([1, 2, 3].myMap((item) => ({ i: item })))
+  </script>
+</body>
+
+</html>

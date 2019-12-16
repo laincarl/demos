@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Generator</title>
+</head>
+
+<body>
+  <script>
+    function* gen(x) {
+      var y = yield x + 2;
+      return y + 1;
+    }
+    var g = gen(1);
+    // 只输出3，不包含return的值
+    for (let v of gen(1)) {
+      console.log(v);
+    }
+    console.log(g.next()) // { value: 3, done: false }
+    console.log(g.next(5)) // { value: 6, done: true }
+    function log(i) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log(i)
+          resolve()
+        }, 1000)
+      })
+    }
+    async function test() {
+      for (let i = 0; i <= 5; i++) {
+        await log(i)
+        console.log('log', i)
+      }
+    }
+    test()
+  </script>
+</body>
+
+</html>
