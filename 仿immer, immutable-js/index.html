@@ -26,60 +26,49 @@
     </pre>
   </figure>
   <script>
-    // function isProxy(object) {
-    //   return object instanceof Proxy;
-    // }
-    // function makeProxy(object) {
-    //   return new Proxy(object, {
-    //     get: function (target, propKey, receiver) {
-    //       console.log(`getting ${propKey}!`);
-    //       return Reflect.get(target, propKey, receiver);
-    //     },
-    //     set: function (target, propKey, value, receiver) {
-    //       console.log(`setting ${propKey}!`);
-    //       return Reflect.set(target, propKey, value, receiver);
-    //     }
-    //   });
-    // }
-    // function produce(state, fn) {
-    //   const proxy = isProxy(state) ? state : makeProxy(state);
-    //   return proxy;
-    // }
-    // const source = {
-    //   a: 1,
-    //   b: [1, 2, 3]
-    // }
-    // const result = produce(source, (data) => {
-    //   data.a = 2;
-    // })
-    // console.assert(result !== source, "对象相等");
-    // console.assert(result.b === source.b, "子属性不相等");
+
     function isObject(something) {
       return something instanceof Object;
     }
     function isProxy(something) {
-      
+
     }
     function lazyProxy(object) {
       const proxy = new Proxy(object, {
         get: function (target, propKey, receiver) {
           console.log(`get:${propKey}`, target);
           if (isObject(target[propKey]) && !isProxy(target[propKey])) {
-            target[propKey] = lazyProxy(target[propKey])
+            const copy = { ...target[propKey] };
+            lazyProxy(copy)
+            return copy
           }
-          return Reflect.get(target, propKey, receiver);
+          return target[propKey];
+        },
+        set: function (target, propKey, value, receiver) {
+          console.log(`setting ${propKey}!`);
+          return Reflect.set(target, propKey, value, receiver);
         }
       });
       return proxy
     }
-    const proxy = lazyProxy({
+    const source = {
       a: 1,
       b: {
         c: 1
       }
-    });
-    console.log(proxy.b.c)
-    console.log(proxy.b.c)
+    }
+    
+    function produce(state, fn) {
+      const proxy = lazyProxy(source);
+      fn(proxy)
+      return proxy;
+    }
+    const result = produce(source, (draft) => {
+      draft.a = 5;
+    })
+    console.log(source, result)
+    // console.assert(result !== source, "对象相等");
+    // console.assert(result.b === source.b, "子属性不相等");
   </script>
 </body>
 
