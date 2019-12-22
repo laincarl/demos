@@ -27,17 +27,17 @@
   </figure>
   <script>
     const proxys = new Map();
-    const clones = new Map();
+    const objects = new Map();
     function isObject(something) {
       return something instanceof Object;
     }
     function isProxy(something) {
-      return clones.has(something)
+      return objects.has(something)
     }
     function setModify(target) {
       let parent = target;
       while (parent) {
-        const attrs = clones.get(target);
+        const attrs = objects.get(target);
         if (attrs.modify) {
           break;
         }
@@ -46,14 +46,28 @@
       }
 
     }
-    function lazyProxy(object, parent, key) {
+    function cloneParent() {
 
-      const clone = { ...object };
-      // parent指向的是之前的子，所以这里将parent指向克隆过的子
-      if (parent && key) {
-        parent[key] = clone
+    }
+    function cloneParents(target) {
+      let object = target;
+      while (object) {
+        const attrs = objects.get(target);
+        const { clone, key, parent } = attrs;
+        if (clone) {
+          break;
+        }
+        const cloneObject = { ...target };
+        // parent指向的是之前的子，所以这里将parent指向克隆过的子
+        if (parent && key) {
+          parent[key] = cloneObject
+        }
+        Object.assign(attrs, { clone: cloneObject });
+        object = parent;
       }
-      const proxy = new Proxy(clone, {
+    }
+    function lazyProxy(object, parent, key) {
+      const proxy = new Proxy(object, {
         get: function (target, propKey, receiver) {
           console.log(`get:${propKey}`, target);
           const current = target[propKey];
@@ -68,7 +82,7 @@
             } else {
               console.log('第二次获取', propKey)
               // 获取时,这时判断,如果已经更改过,就返回代理对象,否则返回原对象
-              const attrs = clones.get(current);
+              const attrs = objects.get(current);
               return attrs.proxy
               // return attrs.modify ? attrs.clone : attrs.source;
             }
@@ -79,20 +93,34 @@
         },
         // 这里获取到的targe是克隆过的对象        
         set: function (target, propKey, value, receiver) {
-          console.log(target)
-          console.log(`setting ${propKey}!`);
-          setModify(target)
-          // 获取克隆的对象，在它上进行修改
-          // const { clone } = proxys.get(target)
+          if (target[propKey] !== value) {
+            // console.log(target, objects.get(target))
+            console.log('set', '开始克隆', propKey);
+            const { parent, key } = objects.get(target);
+            const clone = { ...target };
+            clone[propKey] = value;
+            Object.assign(objects.get(target), { clone })
+            // 递归克隆祖先元素
+            if (parent) {
+              console.log('递归克隆祖先元素', clone)
+              // TODO: 解决更改parent
+              parent[key] = clone;
+              cloneParents(parent);
+            }
+            console.log(`setting ${propKey}!`);
+            return true;
+          }
+          console.log('=')
           return Reflect.set(target, propKey, value, receiver);
         }
       });
-      proxys.set(proxy, clone);
-      clones.set(clone, {
+      objects.set(object, {
         source: object,
         proxy,
         modify: false,
-        parent: null,
+        clone: false,
+        parent,
+        key,
       });
       return proxy
     }
@@ -106,15 +134,14 @@
     function produce(state, fn) {
       const proxy = lazyProxy(state);
       fn(proxy)
-      const clone = proxys.get(proxy);
-      const { modify, source } = clones.get(clone)
-      return modify ? clone : source;
+      const { clone, source } = objects.get(state)
+      return clone ? clone : source;
     }
     const result = produce(source, (draft) => {
-      draft.a = 5;
-      console.log(draft.b.c, '获取')
+      // draft.a = 5;
+      // console.log(draft.b.c, '获取')
       // draft.b.c = 5;
-      // draft.b.c = 6;
+      draft.b.c = 6;
     })
     console.log('source', source)
     console.log('result', result)
