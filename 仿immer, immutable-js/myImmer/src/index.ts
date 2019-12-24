@@ -20,6 +20,7 @@ function getType(something: any) {
     .slice(8, -1)
     .toLowerCase();
 }
+// TODO: 其他数据类型的拷贝
 function shallowCopy(something: any) {
   const type = getType(something);
   switch (type) {
@@ -29,9 +30,9 @@ function shallowCopy(something: any) {
     case 'array': {
       return something.slice();
     }
-    // case 'object': {
-    //   return { ...something };
-    // }
+    case 'map': {
+      return new Map(something);
+    }
     // case 'object': {
     //   return { ...something };
     // }
@@ -49,12 +50,13 @@ function shallowCopy(something: any) {
 function produce(state: Object, fn: DraftFunction) {
   const objects = new Map();
   function isObject(something: any) {
-    return something instanceof Object || something instanceof Array;
+    return ['object', 'array', 'map'].includes(getType(something));
   }
   function isProxy(something: any) {
     return objects.has(something);
   }
   // 递归克隆，在克隆出的父元素上进行修改
+  // TODO: 优化克隆，将克隆和赋值分离
   function cloneParents(
     parent: Object,
     clonedChild: any,
@@ -64,7 +66,12 @@ function produce(state: Object, fn: DraftFunction) {
     const { clone, key: nextKey, parent: nextParent } = attrs;
     // 如果已经克隆过，直接使用克隆过的，更改值即可
     const clonedParent = clone || shallowCopy(parent);
-    clonedParent[key] = clonedChild;
+    if (getType(clonedParent) === 'map') {
+      clonedParent.set(key, clonedChild);
+    } else {
+      Reflect.set(clonedParent, key, clonedChild);
+    }
+
     // 如果是克隆过的，说明其所有父元素已经被克隆，那么不需要进行克隆
     if (clone) {
       return;
@@ -74,14 +81,23 @@ function produce(state: Object, fn: DraftFunction) {
       cloneParents(nextParent, clonedParent, nextKey);
     }
   }
+  /**
+   *
+   * 只有在get时再设置proxy,set时再进行克隆
+   * @param {Object} object
+   * @param {Object} [parent]
+   * @param {PropertyKey} [key]
+   * @returns {Object}
+   */
   function lazyProxy(
     object: Object,
     parent?: Object,
     key?: PropertyKey
   ): Object {
     const proxy = new Proxy(object, {
-      get: function(target: Draft, propKey: string | number, receiver) {
-        const current = target[propKey];
+      get: function(target: Draft, propKey: string | number) {
+        // console.log('get', propKey)
+        const current = Reflect.get(target, propKey);
         // 是对象才进行处理
         if (isObject(current)) {
           // 如果没有设置代理，就设置，以让其子操作时可以被监测到
@@ -98,18 +114,27 @@ function produce(state: Object, fn: DraftFunction) {
           }
         } else {
           const attrs = objects.get(target);
-          // 如果克隆过，获取新的属性
-          if (attrs.clone) {
-            return Reflect.get(attrs.clone, propKey, receiver);
-          } else {
-            return Reflect.get(target, propKey, receiver);
+          const result = attrs.clone
+            ? Reflect.get(attrs.clone, propKey)
+            : current;
+          // TODO: get时不克隆，优化set的逻辑
+          if (
+            typeof result === 'function' &&
+            ['get', 'set'].includes(String(propKey))
+          ) {
+            return function(key: any, value: any) {
+              cloneParents(target, value, key);
+              // console.log(objects.get(target))
+              // return result.call(objects.get(target).clone, key, value)
+            };
           }
+          return result;
         }
       },
       // 这里获取到的targe是克隆过的对象
-      // TODO: 数组的多次push兼容处理
       set: function(target, propKey: string | number, value, receiver) {
-        if (target[propKey] !== value) {
+        // console.log('set')
+        if (Reflect.get(target, propKey) !== value) {
           // console.log(target, objects.get(target))
           // console.log('set', '开始克隆', propKey);
           // 递归克隆
