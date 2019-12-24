@@ -49,7 +49,7 @@ function shallowCopy(something: any) {
 function produce(state: Object, fn: DraftFunction) {
   const objects = new Map();
   function isObject(something: any) {
-    return something instanceof Object;
+    return something instanceof Object || something instanceof Array;
   }
   function isProxy(something: any) {
     return objects.has(something);
@@ -97,8 +97,13 @@ function produce(state: Object, fn: DraftFunction) {
             // return attrs.modify ? attrs.clone : attrs.source;
           }
         } else {
-          // console.log('获取普通属性', propKey);
-          return Reflect.get(target, propKey, receiver);
+          const attrs = objects.get(target);
+          // 如果克隆过，获取新的属性
+          if (attrs.clone) {
+            return Reflect.get(attrs.clone, propKey, receiver);
+          } else {
+            return Reflect.get(target, propKey, receiver);
+          }
         }
       },
       // 这里获取到的targe是克隆过的对象
