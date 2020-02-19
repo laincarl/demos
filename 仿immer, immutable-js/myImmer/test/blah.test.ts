@@ -1,4 +1,4 @@
-import { produce } from '../src';
+import produce from '../src';
 
 describe('produce', () => {
   it('object that not modified should be equal', () => {

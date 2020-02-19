@@ -5,22 +5,30 @@ interface Prop {
   parent: Object | undefined;
   key: string | number | symbol | undefined;
 }
-declare global {
-  type Dictionary<T> = { [key: string]: T };
-}
 interface Draft {
   [propName: string]: any;
 }
 interface DraftFunction {
   (draft: Draft): void;
 }
+/**
+ * 获取一个数据的精确类型
+ *
+ * @param {*} something
+ * @returns
+ */
 function getType(something: any) {
   return Object.prototype.toString
     .call(something)
     .slice(8, -1)
     .toLowerCase();
 }
-// TODO: 其他数据类型的拷贝
+/**
+ * 浅拷贝
+ * TODO: 其他数据类型的拷贝
+ * @param {*} something
+ * @returns
+ */
 function shallowCopy(something: any) {
   const type = getType(something);
   switch (type) {
@@ -160,4 +168,4 @@ function produce(state: Object, fn: DraftFunction) {
   const { clone, source } = objects.get(state);
   return clone || source;
 }
-export { produce };
+export default produce;
